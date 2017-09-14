@@ -29,6 +29,8 @@ namespace ThermoTrack_API_BLE_General.Controllers
             ulong idReader = body.ReaderID;
 
             MySQLController.UpdateBLEReaderLastContact(idReader);
+
+            OpenSSLController.GenerateRSAFiles("client-test");
         }
     }
 }
