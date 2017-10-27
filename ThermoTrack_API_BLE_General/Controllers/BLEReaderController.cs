@@ -47,7 +47,7 @@ namespace ThermoTrack_API_BLE_General.Controllers
             return idReader;
         }
 
-        // POST: api/blereaders
+        // POST: api/blereaders/x
         [HttpPost]
         [Route("{idReader}")]
         public void Post(ulong idReader)
