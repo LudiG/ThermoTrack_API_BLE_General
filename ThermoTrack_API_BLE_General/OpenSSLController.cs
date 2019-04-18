@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Web.Configuration;
@@ -7,6 +8,38 @@ namespace ThermoTrack_API_BLE_General
 {
     public static class OpenSSLController
     {
+        public static bool IsCertificateRegistered(string nameCommon)
+        {
+            string directorySSL = WebConfigurationManager.AppSettings["PATH_SSL"];
+            string logPath = WebConfigurationManager.AppSettings["PATH_LOGS_SSL"];
+
+            List<string> lines = new List<string>();
+
+            try
+            {
+                lines = new List<string>(File.ReadAllLines(directorySSL + @"\keys\index.txt"));
+            }
+
+            catch (Exception ex)
+            {
+                LogToFileWithSubdirectory(ex.Message, logPath);
+
+                return false;
+            }
+
+            foreach (string line in lines)
+            {
+                string attributes = line.Split(null)[5];
+
+                foreach (string token in attributes.Split('/'))
+                    if (token.StartsWith("CN"))
+                        if (token.Substring(3) == nameCommon)
+                            return true;
+            }
+
+            return false;
+        }
+
         public static void CreateCertificateRequest(string nameCommon)
         {
             string directorySSL = WebConfigurationManager.AppSettings["PATH_SSL"];
@@ -89,7 +122,7 @@ namespace ThermoTrack_API_BLE_General
             }
         }
 
-        public static bool MoveCertificateFiles(string nameCommon, string directoryTarget)
+        public static bool CopyCertificateFiles(string nameCommon, string directoryTarget)
         {
             string directorySSL = WebConfigurationManager.AppSettings["PATH_SSL"];
             string logPath = WebConfigurationManager.AppSettings["PATH_LOGS_SSL"];
@@ -101,9 +134,6 @@ namespace ThermoTrack_API_BLE_General
             string pathCertficateTarget = directoryTarget + @"\" + nameCommon + ".crt";
             string pathKeyTarget = directoryTarget + @"\" + nameCommon + ".key";
 
-            if (File.Exists(pathRequestSource))
-                File.Delete(pathRequestSource);
-
             if (File.Exists(pathCertficateTarget))
                 File.Delete(pathCertficateTarget);
 
@@ -112,25 +142,13 @@ namespace ThermoTrack_API_BLE_General
 
             try
             {
-                File.Move(pathCertficateSource, pathCertficateTarget);
-                File.Move(pathKeySource, pathKeyTarget);
+                File.Copy(pathCertficateSource, pathCertficateTarget);
+                File.Copy(pathKeySource, pathKeyTarget);
             }
 
             catch (Exception ex)
             {
                 LogToFileWithSubdirectory(ex.Message, logPath);
-
-                if (File.Exists(pathCertficateSource))
-                    File.Delete(pathCertficateSource);
-
-                if (File.Exists(pathKeySource))
-                    File.Delete(pathKeySource);
-
-                if (File.Exists(pathCertficateTarget))
-                    File.Delete(pathCertficateTarget);
-
-                if (File.Exists(pathKeyTarget))
-                    File.Delete(pathKeyTarget);
 
                 return false;
             }

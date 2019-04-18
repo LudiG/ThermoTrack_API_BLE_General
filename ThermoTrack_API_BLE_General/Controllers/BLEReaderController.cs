@@ -6,17 +6,20 @@ namespace ThermoTrack_API_BLE_General.Controllers
     [RoutePrefix("api/blereaders")]
     public class BLEReaderController : ApiController
     {
-        // GET: api/blereaders/vpn/x
+        // GET: api/blereaders/vpn/{idReader}
         [HttpGet]
         [Route("vpn/{idReader}")]
         public bool GetVPN(ulong idReader)
         {
             string nameCommon = WebConfigurationManager.AppSettings["CN_Prefix"] + idReader;
 
-            OpenSSLController.CreateCertificateRequest(nameCommon);
-            OpenSSLController.SignCertificateRequest(nameCommon);
+            if (!OpenSSLController.IsCertificateRegistered(nameCommon))
+            {
+                OpenSSLController.CreateCertificateRequest(nameCommon);
+                OpenSSLController.SignCertificateRequest(nameCommon);
+            }
 
-            if (OpenSSLController.MoveCertificateFiles(nameCommon, WebConfigurationManager.AppSettings["PATH_SSL_Target"]))
+            if (OpenSSLController.CopyCertificateFiles(nameCommon, WebConfigurationManager.AppSettings["PATH_SSL_Target"]))
             {
                 MySQLController.UpdateBLEReaderUpdateVPN(idReader, true);
 
@@ -26,7 +29,7 @@ namespace ThermoTrack_API_BLE_General.Controllers
             return false;
         }
 
-        // GET: api/blereaders/xxxxxxxxxxxx
+        // GET: api/blereaders/{addressMAC}
         [HttpGet]
         [Route("{addressMAC}")]
         public ulong Get(string addressMAC)
@@ -47,7 +50,7 @@ namespace ThermoTrack_API_BLE_General.Controllers
             return idReader;
         }
 
-        // POST: api/blereaders/x
+        // POST: api/blereaders/{idReader}
         [HttpPost]
         [Route("{idReader}")]
         public void Post(ulong idReader)

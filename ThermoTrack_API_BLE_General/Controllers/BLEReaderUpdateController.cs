@@ -7,7 +7,7 @@ namespace ThermoTrack_API_BLE_General.Controllers
     [RoutePrefix("api/blereaders/update/{idReader}")]
     public class BLEReaderUpdateController : ApiController
     {
-        // GET: api/blereaders/update/rpi_ble_scanner/x
+        // GET: api/blereaders/update/{idReader}/rpi_ble_scanner
         [HttpGet]
         [Route("rpi_ble_scanner")]
         public bool GetRPi_BLE_Scanner(ulong idReader)
@@ -19,7 +19,7 @@ namespace ThermoTrack_API_BLE_General.Controllers
             return update;
         }
 
-        // GET: api/blereaders/update/rpi_watchdog/x
+        // GET: api/blereaders/update/{idReader}/rpi_watchdog
         [HttpGet]
         [Route("rpi_watchdog")]
         public bool GetRPi_WatchDog(ulong idReader)
@@ -31,7 +31,7 @@ namespace ThermoTrack_API_BLE_General.Controllers
             return update;
         }
 
-        // GET: api/blereaders/update/rpi_updater/x
+        // GET: api/blereaders/update/{idReader}/rpi_updater
         [HttpGet]
         [Route("rpi_updater")]
         public bool GetRPi_Updater(ulong idReader)
@@ -43,7 +43,7 @@ namespace ThermoTrack_API_BLE_General.Controllers
             return update;
         }
 
-        // GET: api/blereaders/update/vpn/x
+        // GET: api/blereaders/update/{idReader}/vpn
         [HttpGet]
         [Route("vpn")]
         public bool GetVPN(ulong idReader)
@@ -55,7 +55,7 @@ namespace ThermoTrack_API_BLE_General.Controllers
             return update;
         }
 
-        // POST: api/blereaders/update/rpi_ble_scanner
+        // POST: api/blereaders/update/{idReader}/rpi_ble_scanner
         [HttpPost]
         [Route("rpi_ble_scanner")]
         public void PostRPi_BLE_Scanner(ulong idReader, [FromBody]BLEReaderUpdatePacket body)
@@ -65,7 +65,7 @@ namespace ThermoTrack_API_BLE_General.Controllers
             MySQLController.UpdateBLEReaderUpdate(idReader, BLEReaderApplicationType.RPi_BLE_Scanner, update);
         }
 
-        // POST: api/blereaders/update/rpi_watchdog
+        // POST: api/blereaders/update/{idReader}/rpi_watchdog
         [HttpPost]
         [Route("rpi_watchdog")]
         public void PostRPi_WatchDog(ulong idReader, [FromBody]BLEReaderUpdatePacket body)
@@ -75,7 +75,7 @@ namespace ThermoTrack_API_BLE_General.Controllers
             MySQLController.UpdateBLEReaderUpdate(idReader, BLEReaderApplicationType.RPi_WatchDog, update);
         }
 
-        // POST: api/blereaders/update/rpi_updater
+        // POST: api/blereaders/update/{idReader}/rpi_updater
         [HttpPost]
         [Route("rpi_updater")]
         public void PostRPi_Updater(ulong idReader, [FromBody]BLEReaderUpdatePacket body)
@@ -85,7 +85,7 @@ namespace ThermoTrack_API_BLE_General.Controllers
             MySQLController.UpdateBLEReaderUpdate(idReader, BLEReaderApplicationType.RPi_Updater, update);
         }
 
-        // POST: api/blereaders/update/vpn
+        // POST: api/blereaders/update/{idReader}/vpn
         [HttpPost]
         [Route("vpn")]
         public void PostVPN(ulong idReader, [FromBody]BLEReaderUpdatePacket body)
